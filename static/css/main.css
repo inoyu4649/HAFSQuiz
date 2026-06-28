@@ -279,6 +279,7 @@ a:hover { color: var(--site-primary-hover); text-decoration: underline; }
 .quiz-card--espanol .quiz-card-theme-dot { background: #CC2200; }
 .quiz-card--computer .quiz-card-theme-dot { background: #E0E0E0; }
 .quiz-card--other .quiz-card-theme-dot { background: var(--site-primary); }
+.quiz-card--unofficial .quiz-card-theme-dot { background: #E53935; }
 
 .quiz-card-title {
   margin: 8px 0 0;
@@ -318,6 +319,7 @@ a:hover { color: var(--site-primary-hover); text-decoration: underline; }
 .quiz-card-badge--espanol { background: color-mix(in srgb, #CC2200 20%, transparent); color: #FF5722; }
 .quiz-card-badge--computer { background: color-mix(in srgb, #E0E0E0 20%, transparent); color: #E0E0E0; }
 .quiz-card-badge--other { background: color-mix(in srgb, var(--site-primary) 20%, transparent); color: var(--site-primary); }
+.quiz-card-badge--unofficial { background: color-mix(in srgb, #E53935 20%, transparent); color: #FF5252; }
 
 .quiz-card-cta {
   margin-top: auto;

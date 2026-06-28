@@ -295,7 +295,7 @@ THEMES = {
 }
 
 
-STATIC_VER = '20250629b'
+STATIC_VER = '20250629c'
 
 
 @app.context_processor
@@ -886,11 +886,13 @@ def get_quiz_list():
                 info['count'] = len(data.get('questions', []))
             except Exception:
                 pass
-        for prefix in ('history', 'social', 'science', 'math', 'english', 'korean',
-                       'nihongo', 'zhongwen', 'deutsch', 'francais', 'espanol', 'computer'):
-            if name.startswith(prefix):
-                info['theme'] = prefix
-                break
+            for prefix in ('history', 'social', 'science', 'math', 'english', 'korean',
+                           'nihongo', 'zhongwen', 'deutsch', 'francais', 'espanol', 'computer'):
+                if name.startswith(prefix):
+                    info['theme'] = prefix
+                    break
+        else:
+            info['theme'] = 'unofficial'
         quizzes.append(info)
     return quizzes
 
@@ -1001,44 +1003,45 @@ def api_upload():
     html_file = request.files.get('html_file')
     json_file_obj = request.files.get('json_file')
 
-    if not html_file or not json_file_obj:
-        return jsonify({'error': 'HTML과 JSON 파일이 모두 필요합니다'}), 400
+    if not html_file:
+        return jsonify({'error': 'HTML 파일이 필요합니다'}), 400
 
     html_name = html_file.filename or ''
-    json_name = json_file_obj.filename or ''
-
     if not html_name.endswith('.html'):
         return jsonify({'error': 'HTML 파일(.html)을 선택하세요'}), 400
-    if not json_name.endswith('.json'):
-        return jsonify({'error': 'JSON 파일(.json)을 선택하세요'}), 400
 
     html_base = html_name[:-5]
-    json_base = json_name[:-5]
-    if html_base != json_base:
-        return jsonify({'error': 'HTML과 JSON 파일 이름(확장자 제외)이 일치해야 합니다'}), 400
-
     safe = sanitize_name(html_base)
     if not safe or safe != html_base:
         return jsonify({'error': '파일 이름은 영문자와 숫자만 허용됩니다'}), 400
-
-    try:
-        json_data = json.loads(json_file_obj.read().decode('utf-8'))
-    except Exception:
-        return jsonify({'error': 'JSON 파일을 읽을 수 없습니다'}), 400
-
-    if 'meta' not in json_data or 'questions' not in json_data:
-        return jsonify({'error': 'JSON에 meta와 questions 필드가 필요합니다'}), 400
-    if not isinstance(json_data['questions'], list) or len(json_data['questions']) == 0:
-        return jsonify({'error': '문항이 최소 1개 필요합니다'}), 400
 
     html_path = QUIZ_DIR / (safe + '.html')
     json_path = QUIZ_DIR / (safe + '.json')
     if html_path.exists() or json_path.exists():
         return jsonify({'error': f'"{safe}" 이름의 파일이 이미 존재합니다'}), 409
 
+    # JSON optional — if provided, validate and save; otherwise unofficial mode
+    json_data = None
+    if json_file_obj and json_file_obj.filename:
+        json_name = json_file_obj.filename or ''
+        if not json_name.endswith('.json'):
+            return jsonify({'error': 'JSON 파일(.json)을 선택하세요'}), 400
+        json_base = json_name[:-5]
+        if json_base != html_base:
+            return jsonify({'error': 'HTML과 JSON 파일 이름(확장자 제외)이 일치해야 합니다'}), 400
+        try:
+            json_data = json.loads(json_file_obj.read().decode('utf-8'))
+        except Exception:
+            return jsonify({'error': 'JSON 파일을 읽을 수 없습니다'}), 400
+        if 'meta' not in json_data or 'questions' not in json_data:
+            return jsonify({'error': 'JSON에 meta와 questions 필드가 필요합니다'}), 400
+        if not isinstance(json_data['questions'], list) or len(json_data['questions']) == 0:
+            return jsonify({'error': '문항이 최소 1개 필요합니다'}), 400
+
     html_file.seek(0)
     html_path.write_bytes(html_file.read())
-    json_path.write_text(json.dumps(json_data, ensure_ascii=False, indent=2), encoding='utf-8')
+    if json_data is not None:
+        json_path.write_text(json.dumps(json_data, ensure_ascii=False, indent=2), encoding='utf-8')
 
     return jsonify({'success': True, 'name': safe,
                     'url': url_for('serve_quiz', name=safe)})

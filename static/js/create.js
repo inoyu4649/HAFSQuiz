@@ -235,7 +235,7 @@ document.getElementById('uploadForm').addEventListener('submit', async e => {
   const htmlFile = document.getElementById('uploadHtml').files[0];
   const jsonFile = document.getElementById('uploadJson').files[0];
 
-  if (!htmlFile || !jsonFile) { showError(errEl, 'HTML과 JSON 파일을 모두 선택하세요'); return; }
+  if (!htmlFile) { showError(errEl, 'HTML 파일을 선택하세요'); return; }
 
   const fd = new FormData();
   fd.append('html_file', htmlFile);

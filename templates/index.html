@@ -21,18 +21,34 @@
   {% if quizzes %}
   <div class="quiz-grid">
     {% for quiz in quizzes %}
+    {% if quiz.theme == 'unofficial' %}
+    <a href="/quiz/{{ quiz.name }}" class="quiz-card quiz-card--unofficial"
+       onclick="return confirmUnofficial(event, this.href)">
+    {% else %}
     <a href="/quiz/{{ quiz.name }}" class="quiz-card quiz-card--{{ quiz.theme }}">
+    {% endif %}
       <div class="quiz-card-theme-dot"></div>
       <h3 class="quiz-card-title">{{ quiz.title }}</h3>
       <div class="quiz-card-meta">
-        <span class="quiz-card-count">{{ quiz.count }}문항</span>
+        <span class="quiz-card-count">{% if quiz.theme != 'unofficial' %}{{ quiz.count }}문항{% endif %}</span>
         <span class="quiz-card-badge quiz-card-badge--{{ quiz.theme }}">
-          {{ themes[quiz.theme].label.split(' ')[0] if quiz.theme in themes else '기타' }}
+          {% if quiz.theme == 'unofficial' %}비공식
+          {% else %}{{ themes[quiz.theme].label.split(' ')[0] if quiz.theme in themes else '기타' }}
+          {% endif %}
         </span>
       </div>
       <div class="quiz-card-cta">풀기 →</div>
     </a>
     {% endfor %}
+
+<script>
+function confirmUnofficial(e, href) {
+  e.preventDefault();
+  const ok = confirm('이 퀴즈는 HAFSQuiz의 양식을 따르지 않습니다.\n이 퀴즈에 접속함으로써 발생하는 피해나 정보 유출은 HAFSQuiz가 책임지지 않습니다.\n\n계속 접속하시겠습니까?');
+  if (ok) window.location.href = href;
+  return false;
+}
+</script>
   </div>
   {% else %}
   <div class="empty-state">
