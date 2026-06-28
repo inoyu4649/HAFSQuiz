@@ -1,0 +1,195 @@
+{% extends 'base.html' %}
+{% block title %}퀴즈 만들기 — HAFSQuiz{% endblock %}
+{% block head %}<link rel="stylesheet" href="/static/css/create.css">{% endblock %}
+
+{% block content %}
+{% if not session.get('user') %}
+<div class="create-login-wall">
+  <div class="create-login-card">
+    <p class="login-wall-icon">🔒</p>
+    <h2 class="login-wall-title">로그인이 필요합니다</h2>
+    <p class="login-wall-desc">퀴즈 생성은 외대부고 구글 계정(@hafs.hs.kr)으로만 가능합니다.</p>
+    <a href="/auth/login" class="btn-primary btn-lg">구글 계정으로 로그인</a>
+  </div>
+</div>
+{% else %}
+
+<!-- AI Helper Section -->
+<details class="ai-helper">
+  <summary class="ai-helper-summary">
+    <span class="ai-helper-icon">🤖</span>
+    <span>AI로 퀴즈 쉽게 생성하기</span>
+    <span class="ai-helper-arrow">▾</span>
+  </summary>
+  <div class="ai-helper-body">
+    <div class="ai-helper-cols">
+      <div class="ai-helper-left">
+        <h3 class="ai-step-title">① Memory 파일 다운로드</h3>
+        <p class="ai-step-desc">아래 4개 파일을 모두 다운로드하여 AI 에이전트에 첨부하세요.</p>
+        <ul class="memory-download-list">
+          {% for filename, label in memory_files %}
+          <li>
+            <a href="/download/memory/{{ filename }}" class="memory-dl-btn" download>
+              <span class="dl-icon">⬇</span> {{ label }}
+              <span class="dl-fname">{{ filename }}</span>
+            </a>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+      <div class="ai-helper-right">
+        <h3 class="ai-step-title">② AI 에이전트에 이 프롬프트를 입력하세요</h3>
+        <p class="ai-step-desc"><strong>Claude Code</strong> 또는 <strong>Codex</strong> 권장</p>
+        <div class="ai-prompt-box">
+          <button class="copy-prompt-btn" type="button" onclick="copyPrompt()">복사</button>
+          <pre class="ai-prompt-text" id="aiPromptText">너는 전국 자사고 외대부고의 <span class="prompt-ph">(과목)</span> 출제위원이야. 업로드한 <span class="prompt-ph">(단원)</span> 관련 PDF에서 단어 하나, 조약 문구 하나를 비틀어 매력적인 오답을 만드는 '외대부고 내신형 킬러 문항' 총 <span class="prompt-ph">(문항수)</span>문항을 출제해줘. 각 문제마다 [사료/지문], [5지선다 선지], [정답], [치밀한 오답 선지 분석 해설]을 Memory JSON 양식에 맞게 출력해줘. Memory에 있는 과학테마를 사용해서. 다만 해당 json과 달리, 지금은 마크다운 특유의 문법은 절대 사용하지 말고, plain text로만 써줘. 메모리 4개 파일을 꼭 모두 참고해줘. 파일명은 <span class="prompt-ph">(과목)</span>+<span class="prompt-ph">(단원숫자)</span>+danwon.json으로, html도 세트로 만들어줘. 제목은 '외대부고 <span class="prompt-ph">(과목)</span> <span class="prompt-ph">(단원)</span> 킬러 <span class="prompt-ph">(문제수)</span>'으로.</pre>
+        </div>
+        <p class="ai-step-note">괄호 <code>(과목)</code> <code>(단원)</code> <code>(문항수)</code> 부분을 직접 채워 넣으세요.</p>
+      </div>
+    </div>
+  </div>
+</details>
+
+<!-- Tab Bar -->
+<div class="create-tabs">
+  <button class="create-tab active" data-tab="manual" type="button">직접 만들기</button>
+  <button class="create-tab" data-tab="upload" type="button">파일 업로드</button>
+</div>
+
+<!-- ── Manual Creation ───────────────────────────────────────────── -->
+<div id="tab-manual" class="tab-panel active">
+  <form id="createForm" class="create-form">
+
+    <!-- Meta info -->
+    <div class="form-section">
+      <h3 class="form-section-title">기본 정보</h3>
+      <div class="form-row form-row--3">
+        <div class="form-group">
+          <label class="form-label" for="subjectSelect">과목</label>
+          <select id="subjectSelect" class="form-input" onchange="onSubjectChange()">
+            <option value="history">한국사</option>
+            <option value="social">통합사회</option>
+            <option value="science" selected>통합과학</option>
+            <option value="custom">기타 (직접 입력)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="unitCode">단원 코드 <span class="form-hint">(숫자만, 예: 212)</span></label>
+          <input type="text" id="unitCode" class="form-input" placeholder="212" maxlength="10"
+                 oninput="onNameChange()">
+        </div>
+        <div class="form-group" id="customSubjectGroup" style="display:none">
+          <label class="form-label" for="customSubject">과목명 직접 입력 <span class="form-hint">(영문, 예: math)</span></label>
+          <input type="text" id="customSubject" class="form-input" placeholder="math" maxlength="20"
+                 oninput="onNameChange()">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">생성될 파일명</label>
+          <div class="filename-preview" id="filenamePreview">
+            <span class="filename-html" id="fnHtml">science<span class="fn-unit">212</span>danwon.html</span>
+            <span class="filename-sep">+</span>
+            <span class="filename-json" id="fnJson">science<span class="fn-unit2">212</span>danwon.json</span>
+          </div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group form-group--full">
+          <label class="form-label" for="quizTitle">퀴즈 제목</label>
+          <input type="text" id="quizTitle" class="form-input" placeholder="외대부고 통합과학 천문학 킬러 50" maxlength="100">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group form-group--full">
+          <label class="form-label">테마</label>
+          <div class="theme-options">
+            {% for key, t in themes.items() %}
+            <label class="theme-option theme-option--{{ key }}">
+              <input type="radio" name="theme" value="{{ key }}" {% if key == 'science' %}checked{% endif %}
+                     class="theme-radio">
+              <span class="theme-dot"></span>
+              <span class="theme-label">{{ t.label }}</span>
+            </label>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Question editor -->
+    <div class="form-section">
+      <div class="questions-header">
+        <h3 class="form-section-title">문항 편집 <span class="q-count" id="qCount">0문항</span></h3>
+        <button type="button" class="btn-add-q" onclick="addQuestion()">+ 문항 추가</button>
+      </div>
+      <div id="questionList" class="question-list"></div>
+      <button type="button" class="btn-add-q btn-add-q--bottom" onclick="addQuestion()">+ 문항 추가</button>
+    </div>
+
+    <!-- Submit -->
+    <div class="form-submit-row">
+      <div class="submit-error" id="submitError"></div>
+      <button type="submit" class="btn-primary btn-submit" id="submitBtn">퀴즈 생성</button>
+    </div>
+  </form>
+</div>
+
+<!-- ── Upload ────────────────────────────────────────────────────── -->
+<div id="tab-upload" class="tab-panel">
+  <div class="upload-info">
+    <p>AI로 생성한 HTML + JSON 파일을 함께 업로드하세요.</p>
+    <ul>
+      <li>두 파일의 이름(확장자 제외)이 <strong>반드시 일치</strong>해야 합니다</li>
+      <li>파일명은 <strong>영문자와 숫자만</strong> 허용됩니다 (예: <code>science333danwon</code>)</li>
+      <li>JSON은 <code>meta.title</code>과 <code>questions</code> 배열을 포함해야 합니다</li>
+    </ul>
+  </div>
+
+  <form id="uploadForm" class="upload-form">
+    <div class="upload-row">
+      <div class="upload-slot">
+        <label class="upload-label" for="uploadHtml">
+          <span class="upload-slot-icon">📄</span>
+          <span class="upload-slot-name">HTML 파일</span>
+          <input type="file" id="uploadHtml" name="html_file" accept=".html" class="upload-input"
+                 onchange="onUploadChange()">
+          <span class="upload-slot-hint" id="htmlHint">클릭하여 .html 파일 선택</span>
+        </label>
+      </div>
+      <div class="upload-slot">
+        <label class="upload-label" for="uploadJson">
+          <span class="upload-slot-icon">📋</span>
+          <span class="upload-slot-name">JSON 파일</span>
+          <input type="file" id="uploadJson" name="json_file" accept=".json" class="upload-input"
+                 onchange="onUploadChange()">
+          <span class="upload-slot-hint" id="jsonHint">클릭하여 .json 파일 선택</span>
+        </label>
+      </div>
+    </div>
+    <div class="form-submit-row">
+      <div class="submit-error" id="uploadError"></div>
+      <button type="submit" class="btn-primary btn-submit" id="uploadBtn">업로드</button>
+    </div>
+  </form>
+</div>
+
+<!-- Success Modal -->
+<div id="successModal" class="modal-overlay" style="display:none">
+  <div class="modal-card">
+    <p class="modal-icon">✅</p>
+    <h3 class="modal-title">퀴즈 생성 완료!</h3>
+    <p class="modal-msg" id="modalMsg"></p>
+    <div class="modal-actions">
+      <a id="modalQuizLink" href="#" class="btn-primary" target="_blank">퀴즈 풀러 가기</a>
+      <button type="button" class="btn-ghost" onclick="closeModal()">닫기</button>
+    </div>
+  </div>
+</div>
+
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/create.js"></script>
+{% endblock %}

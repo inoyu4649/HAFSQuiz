@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}오류 — HAFSQuiz{% endblock %}
+
+{% block content %}
+<div class="error-page">
+  <div class="error-card">
+    <p class="error-icon">⚠️</p>
+    <h2 class="error-title">접근 불가</h2>
+    <p class="error-msg">{{ message }}</p>
+    <div class="error-actions">
+      {% if show_back %}
+      <a href="javascript:history.back()" class="btn-ghost">뒤로 가기</a>
+      {% endif %}
+      <a href="/quiz" class="btn-primary">퀴즈 목록으로</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

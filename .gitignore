@@ -1,0 +1,24 @@
+# Environment & secrets
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+
+# Virtual environments
+venv/
+env/
+.venv/
+
+# Quiz content (server-local, not version controlled)
+quizzes/*.html
+quizzes/*.json
+
+# Logs & temp
+*.log
+*.tmp
+.DS_Store
+Thumbs.db

@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block title %}퀴즈 목록 — HAFSQuiz{% endblock %}
+
+{% block content %}
+<div class="page-hero">
+  <h1 class="hero-title">HAFSQuiz</h1>
+  <p class="hero-sub">외대부고 학내 전용 킬러 문항 퀴즈</p>
+  {% if not session.get('user') %}
+  <a href="/auth/login" class="hero-login-btn">구글 계정으로 로그인 (퀴즈 생성)</a>
+  {% endif %}
+</div>
+
+<section class="quiz-section">
+  <div class="section-header">
+    <h2 class="section-title">퀴즈 목록</h2>
+    {% if session.get('user') %}
+    <a href="/create" class="btn-primary">+ 퀴즈 만들기</a>
+    {% endif %}
+  </div>
+
+  {% if quizzes %}
+  <div class="quiz-grid">
+    {% for quiz in quizzes %}
+    <a href="/quiz/{{ quiz.name }}" class="quiz-card quiz-card--{{ quiz.theme }}">
+      <div class="quiz-card-theme-dot"></div>
+      <h3 class="quiz-card-title">{{ quiz.title }}</h3>
+      <div class="quiz-card-meta">
+        <span class="quiz-card-count">{{ quiz.count }}문항</span>
+        <span class="quiz-card-badge quiz-card-badge--{{ quiz.theme }}">
+          {% if quiz.theme == 'history' %}한국사
+          {% elif quiz.theme == 'social' %}통합사회
+          {% elif quiz.theme == 'science' %}통합과학
+          {% else %}기타{% endif %}
+        </span>
+      </div>
+      <div class="quiz-card-cta">풀기 →</div>
+    </a>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty-state">
+    <p class="empty-icon">📚</p>
+    <p class="empty-msg">아직 등록된 퀴즈가 없습니다.</p>
+    {% if session.get('user') %}
+    <a href="/create" class="btn-primary">첫 퀴즈 만들기</a>
+    {% else %}
+    <p class="empty-sub">로그인 후 퀴즈를 만들어 보세요.</p>
+    {% endif %}
+  </div>
+  {% endif %}
+</section>
+{% endblock %}

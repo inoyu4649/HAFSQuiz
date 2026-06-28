@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}HAFSQuiz{% endblock %}</title>
+  <link rel="stylesheet" href="/static/css/main.css">
+  {% block head %}{% endblock %}
+</head>
+<body>
+  <header class="site-header">
+    <div class="site-header-inner">
+      <a href="/quiz" class="site-logo">HAFSQuiz</a>
+      <nav class="site-nav">
+        <a href="/quiz" class="nav-link">퀴즈 목록</a>
+        {% if session.get('user') %}
+          <a href="/create" class="nav-link">퀴즈 만들기</a>
+          <div class="user-chip">
+            {% if session.user.picture %}
+              <img src="{{ session.user.picture }}" alt="프로필" class="user-avatar">
+            {% endif %}
+            <span class="user-name">{{ session.user.name }}</span>
+            <a href="/auth/logout" class="nav-link logout-link">로그아웃</a>
+          </div>
+        {% else %}
+          <a href="/create" class="nav-link">퀴즈 만들기</a>
+          <a href="/auth/login" class="login-btn">로그인</a>
+        {% endif %}
+      </nav>
+    </div>
+  </header>
+
+  <main class="site-main">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="site-footer">
+    <p>HAFSQuiz — 외대부고 학내 전용 퀴즈 플랫폼</p>
+  </footer>
+
+  {% block scripts %}{% endblock %}
+</body>
+</html>
