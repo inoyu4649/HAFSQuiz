@@ -42,7 +42,7 @@
         <p class="ai-step-desc"><strong>Claude Code</strong> 또는 <strong>Codex</strong> 권장</p>
         <div class="ai-prompt-box">
           <button class="copy-prompt-btn" type="button" onclick="copyPrompt()">복사</button>
-          <pre class="ai-prompt-text" id="aiPromptText">너는 전국 자사고 외대부고의 <span class="prompt-ph">(과목)</span> 출제위원이야. 업로드한 <span class="prompt-ph">(단원)</span> 관련 PDF에서 단어 하나, 조약 문구 하나를 비틀어 매력적인 오답을 만드는 '외대부고 내신형 킬러 문항' 총 <span class="prompt-ph">(문항수)</span>문항을 출제해줘. 각 문제마다 [사료/지문], [5지선다 선지], [정답], [치밀한 오답 선지 분석 해설]을 Memory JSON 양식에 맞게 출력해줘. Memory에 있는 과학테마를 사용해서. 다만 해당 json과 달리, 지금은 마크다운 특유의 문법은 절대 사용하지 말고, plain text로만 써줘. 메모리 4개 파일을 꼭 모두 참고해줘. 파일명은 <span class="prompt-ph">(과목)</span>+<span class="prompt-ph">(단원숫자)</span>+danwon.json으로, html도 세트로 만들어줘. 제목은 '외대부고 <span class="prompt-ph">(과목)</span> <span class="prompt-ph">(단원)</span> 킬러 <span class="prompt-ph">(문제수)</span>'으로.</pre>
+          <pre class="ai-prompt-text" id="aiPromptText">너는 전국 자사고 외대부고의 <span class="prompt-ph">(과목)</span> 출제위원이야. 업로드한 <span class="prompt-ph">(단원)</span> 관련 PDF에서 단어 하나, 조약 문구 하나를 비틀어 매력적인 오답을 만드는 '외대부고 내신형 킬러 문항' 총 <span class="prompt-ph">(문항수)</span>문항을 출제해줘. 각 문제마다 [사료/지문], [5지선다 선지], [정답], [치밀한 오답 선지 분석 해설]을 Memory JSON 양식에 맞게 출력해줘. Memory에 있는 <span class="prompt-ph">(과목)</span>테마를 사용해서. 다만 해당 json과 달리, 지금은 마크다운 특유의 문법은 절대 사용하지 말고, plain text로만 써줘. 메모리 4개 파일을 꼭 모두 참고해줘. 파일명은 <span class="prompt-ph">(과목)</span>+<span class="prompt-ph">(단원숫자)</span>+danwon.json으로, html도 세트로 만들어줘. 제목은 '외대부고 <span class="prompt-ph">(과목)</span> <span class="prompt-ph">(단원)</span> 킬러 <span class="prompt-ph">(문제수)</span>'으로.</pre>
         </div>
         <p class="ai-step-note">괄호 <code>(과목)</code> <code>(단원)</code> <code>(문항수)</code> 부분을 직접 채워 넣으세요.</p>
       </div>
