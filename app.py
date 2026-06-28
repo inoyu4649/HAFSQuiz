@@ -878,7 +878,8 @@ def get_quiz_list():
                 info['count'] = len(data.get('questions', []))
             except Exception:
                 pass
-        for prefix in ('history', 'social', 'science'):
+        for prefix in ('history', 'social', 'science', 'math', 'english', 'korean',
+                       'nihongo', 'zhongwen', 'deutsch', 'francais', 'espanol', 'computer'):
             if name.startswith(prefix):
                 info['theme'] = prefix
                 break
