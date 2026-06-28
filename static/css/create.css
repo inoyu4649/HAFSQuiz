@@ -306,8 +306,39 @@ details[open] .ai-helper-arrow { transform: rotate(180deg); }
 .theme-option--history .theme-dot { background: #A63D2F; }
 .theme-option--social .theme-dot { background: #B89000; }
 .theme-option--science .theme-dot { background: #00B5A0; }
+.theme-option--math .theme-dot { background: #2979FF; }
+.theme-option--english .theme-dot { background: #1565C0; }
+.theme-option--korean .theme-dot { background: #C62828; }
+.theme-option--nihongo .theme-dot { background: #D81B60; }
+.theme-option--zhongwen .theme-dot { background: #B71C1C; }
+.theme-option--deutsch .theme-dot { background: #CC2200; }
+.theme-option--francais .theme-dot { background: #1A3A8A; }
+.theme-option--espanol .theme-dot { background: #CC2200; }
+.theme-option--computer .theme-dot { background: #E0E0E0; }
 
 .theme-label { font-size: .88rem; font-weight: 600; }
+
+/* ── Auto theme display ───────────────────────────────────────────── */
+.theme-auto-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 16px;
+  border: 1px solid var(--site-border);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--site-primary) 6%, var(--site-card));
+  font-size: .88rem;
+  font-weight: 600;
+}
+
+.theme-auto-dot {
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.theme-auto-name { color: var(--site-text); }
+.theme-auto-hint { color: var(--site-muted); font-size: .78rem; font-weight: 400; margin-left: 4px; }
 
 /* ── Questions Header ────────────────────────────────────────────── */
 .questions-header {

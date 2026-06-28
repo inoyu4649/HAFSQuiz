@@ -269,6 +269,15 @@ a:hover { color: var(--site-primary-hover); text-decoration: underline; }
 .quiz-card--history .quiz-card-theme-dot { background: #A63D2F; }
 .quiz-card--social .quiz-card-theme-dot { background: #B89000; }
 .quiz-card--science .quiz-card-theme-dot { background: #00B5A0; }
+.quiz-card--math .quiz-card-theme-dot { background: #2979FF; }
+.quiz-card--english .quiz-card-theme-dot { background: #1565C0; }
+.quiz-card--korean .quiz-card-theme-dot { background: #C62828; }
+.quiz-card--nihongo .quiz-card-theme-dot { background: #D81B60; }
+.quiz-card--zhongwen .quiz-card-theme-dot { background: #B71C1C; }
+.quiz-card--deutsch .quiz-card-theme-dot { background: #CC2200; }
+.quiz-card--francais .quiz-card-theme-dot { background: #1A3A8A; }
+.quiz-card--espanol .quiz-card-theme-dot { background: #CC2200; }
+.quiz-card--computer .quiz-card-theme-dot { background: #E0E0E0; }
 .quiz-card--other .quiz-card-theme-dot { background: var(--site-primary); }
 
 .quiz-card-title {
@@ -299,6 +308,15 @@ a:hover { color: var(--site-primary-hover); text-decoration: underline; }
 .quiz-card-badge--history { background: color-mix(in srgb, #A63D2F 20%, transparent); color: #C34B3C; }
 .quiz-card-badge--social { background: color-mix(in srgb, #B89000 20%, transparent); color: #DAB800; }
 .quiz-card-badge--science { background: color-mix(in srgb, #00B5A0 20%, transparent); color: #00D5BE; }
+.quiz-card-badge--math { background: color-mix(in srgb, #2979FF 20%, transparent); color: #5C9BFF; }
+.quiz-card-badge--english { background: color-mix(in srgb, #1565C0 20%, transparent); color: #4A8CD6; }
+.quiz-card-badge--korean { background: color-mix(in srgb, #C62828 20%, transparent); color: #E53935; }
+.quiz-card-badge--nihongo { background: color-mix(in srgb, #D81B60 20%, transparent); color: #F06292; }
+.quiz-card-badge--zhongwen { background: color-mix(in srgb, #B71C1C 20%, transparent); color: #E53935; }
+.quiz-card-badge--deutsch { background: color-mix(in srgb, #CC2200 20%, transparent); color: #FF5722; }
+.quiz-card-badge--francais { background: color-mix(in srgb, #1A3A8A 20%, transparent); color: #5C7BC7; }
+.quiz-card-badge--espanol { background: color-mix(in srgb, #CC2200 20%, transparent); color: #FF5722; }
+.quiz-card-badge--computer { background: color-mix(in srgb, #E0E0E0 20%, transparent); color: #E0E0E0; }
 .quiz-card-badge--other { background: color-mix(in srgb, var(--site-primary) 20%, transparent); color: var(--site-primary); }
 
 .quiz-card-cta {

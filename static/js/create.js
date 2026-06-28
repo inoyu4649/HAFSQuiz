@@ -13,11 +13,53 @@ document.querySelectorAll('.create-tab').forEach(tab => {
   });
 });
 
+// ── Subject → theme mapping ───────────────────────────────────────
+const SUBJECT_THEME = {
+  history:  { key: 'history',  label: '한국사 (갈색 다크)',      dot: '#A63D2F' },
+  social:   { key: 'social',   label: '통합사회 (노란 라이트)',   dot: '#B89000' },
+  science:  { key: 'science',  label: '통합과학 (청록 다크)',     dot: '#00B5A0' },
+  math:     { key: 'math',     label: '수학 (파랑 다크)',         dot: '#2979FF' },
+  english:  { key: 'english',  label: '영어 (파랑 라이트)',       dot: '#1565C0' },
+  korean:   { key: 'korean',   label: '국어 (빨강 라이트)',       dot: '#C62828' },
+  nihongo:  { key: 'nihongo',  label: '일본어 (핑크 라이트)',     dot: '#D81B60' },
+  zhongwen: { key: 'zhongwen', label: '중국어 (홍기 라이트)',     dot: '#B71C1C' },
+  deutsch:  { key: 'deutsch',  label: '독일어 (독일기 다크)',     dot: '#CC2200' },
+  francais: { key: 'francais', label: '프랑스어 (삼색기 라이트)', dot: '#1A3A8A' },
+  espanol:  { key: 'espanol',  label: '스페인어 (국기 라이트)',   dot: '#CC2200' },
+  computer: { key: 'computer', label: '정보 (CLI 다크)',          dot: '#E0E0E0' },
+};
+
+function applyTheme(key) {
+  const radio = document.getElementById('themeRadio_' + key);
+  if (radio) radio.checked = true;
+}
+
+function updateThemeDisplay(subject) {
+  const autoDisplay = document.getElementById('themeAutoDisplay');
+  const customRow   = document.getElementById('customThemeRow');
+
+  if (subject === 'custom') {
+    autoDisplay.style.display = 'none';
+    customRow.style.display   = 'block';
+    // keep whichever radio is already checked
+    return;
+  }
+
+  autoDisplay.style.display = 'block';
+  customRow.style.display   = 'none';
+
+  const info = SUBJECT_THEME[subject] || SUBJECT_THEME['science'];
+  applyTheme(info.key);
+  document.getElementById('themeAutoDot').style.background = info.dot;
+  document.getElementById('themeAutoName').textContent     = info.label;
+}
+
 // ── Subject / filename preview ────────────────────────────────────
 function onSubjectChange() {
   const val = document.getElementById('subjectSelect').value;
   const customGroup = document.getElementById('customSubjectGroup');
   customGroup.style.display = val === 'custom' ? 'block' : 'none';
+  updateThemeDisplay(val);
   onNameChange();
 }
 
@@ -241,5 +283,9 @@ function escHTML(str) {
     ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }
 
-// Init: update filename preview on load
-onNameChange();
+// Init: sync theme display and filename preview on load
+(function () {
+  const initial = document.getElementById('subjectSelect').value;
+  updateThemeDisplay(initial);
+  onNameChange();
+})();

@@ -70,6 +70,15 @@
             <option value="history">한국사</option>
             <option value="social">통합사회</option>
             <option value="science" selected>통합과학</option>
+            <option value="math">수학</option>
+            <option value="english">영어</option>
+            <option value="korean">국어</option>
+            <option value="nihongo">일본어</option>
+            <option value="zhongwen">중국어</option>
+            <option value="deutsch">독일어</option>
+            <option value="francais">프랑스어</option>
+            <option value="espanol">스페인어</option>
+            <option value="computer">정보</option>
             <option value="custom">기타 (직접 입력)</option>
           </select>
         </div>
@@ -102,16 +111,30 @@
       </div>
       <div class="form-row">
         <div class="form-group form-group--full">
-          <label class="form-label">테마</label>
-          <div class="theme-options">
-            {% for key, t in themes.items() %}
-            <label class="theme-option theme-option--{{ key }}">
-              <input type="radio" name="theme" value="{{ key }}" {% if key == 'science' %}checked{% endif %}
-                     class="theme-radio">
-              <span class="theme-dot"></span>
-              <span class="theme-label">{{ t.label }}</span>
-            </label>
-            {% endfor %}
+          <label class="form-label">테마 <span class="form-hint">(과목에 따라 자동 결정)</span></label>
+          <!-- Hidden radios — value set by JS -->
+          {% for key, t in themes.items() %}
+          <input type="radio" name="theme" value="{{ key }}" {% if key == 'science' %}checked{% endif %}
+                 id="themeRadio_{{ key }}" style="position:absolute;opacity:0;width:0;height:0">
+          {% endfor %}
+          <!-- Auto badge (built-ins) -->
+          <div id="themeAutoDisplay">
+            <div class="theme-auto-badge">
+              <span class="theme-auto-dot" id="themeAutoDot"></span>
+              <span class="theme-auto-name" id="themeAutoName"></span>
+              <span class="theme-auto-hint">자동 선택됨</span>
+            </div>
+          </div>
+          <!-- Manual selector (custom only) -->
+          <div id="customThemeRow" style="display:none">
+            <div class="theme-options">
+              {% for key, t in themes.items() %}
+              <label class="theme-option theme-option--{{ key }}" for="themeRadio_{{ key }}">
+                <span class="theme-dot"></span>
+                <span class="theme-label">{{ t.label }}</span>
+              </label>
+              {% endfor %}
+            </div>
           </div>
         </div>
       </div>
