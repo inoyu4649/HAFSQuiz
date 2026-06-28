@@ -27,10 +27,7 @@
       <div class="quiz-card-meta">
         <span class="quiz-card-count">{{ quiz.count }}문항</span>
         <span class="quiz-card-badge quiz-card-badge--{{ quiz.theme }}">
-          {% if quiz.theme == 'history' %}한국사
-          {% elif quiz.theme == 'social' %}통합사회
-          {% elif quiz.theme == 'science' %}통합과학
-          {% else %}기타{% endif %}
+          {{ themes[quiz.theme].label.split(' ')[0] if quiz.theme in themes else '기타' }}
         </span>
       </div>
       <div class="quiz-card-cta">풀기 →</div>
