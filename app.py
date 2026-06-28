@@ -295,6 +295,14 @@ THEMES = {
 }
 
 
+STATIC_VER = '20250629b'
+
+
+@app.context_processor
+def inject_static_ver():
+    return {'sv': STATIC_VER}
+
+
 def require_login(f):
     @wraps(f)
     def decorated(*args, **kwargs):

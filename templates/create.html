@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block title %}퀴즈 만들기 — HAFSQuiz{% endblock %}
-{% block head %}<link rel="stylesheet" href="/static/css/create.css">{% endblock %}
+{% block head %}<link rel="stylesheet" href="/static/css/create.css?v={{ sv }}">{% endblock %}
 
 {% block content %}
 {% if not session.get('user') %}
@@ -212,5 +212,5 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="/static/js/create.js"></script>
+<script src="/static/js/create.js?v={{ sv }}"></script>
 {% endblock %}
