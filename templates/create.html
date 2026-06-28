@@ -112,11 +112,8 @@
       <div class="form-row">
         <div class="form-group form-group--full">
           <label class="form-label">테마 <span class="form-hint">(과목에 따라 자동 결정)</span></label>
-          <!-- Hidden radios — value set by JS -->
-          {% for key, t in themes.items() %}
-          <input type="radio" name="theme" value="{{ key }}" {% if key == 'science' %}checked{% endif %}
-                 id="themeRadio_{{ key }}" style="position:absolute;opacity:0;width:0;height:0">
-          {% endfor %}
+          <!-- Single hidden input — value set by JS -->
+          <input type="hidden" id="selectedTheme" name="theme" value="science">
           <!-- Auto badge (built-ins) -->
           <div id="themeAutoDisplay">
             <div class="theme-auto-badge">
@@ -129,10 +126,11 @@
           <div id="customThemeRow" style="display:none">
             <div class="theme-options">
               {% for key, t in themes.items() %}
-              <label class="theme-option theme-option--{{ key }}" for="themeRadio_{{ key }}">
+              <button type="button" class="theme-option theme-option--{{ key }}"
+                      data-theme="{{ key }}" onclick="selectCustomTheme(this)">
                 <span class="theme-dot"></span>
                 <span class="theme-label">{{ t.label }}</span>
-              </label>
+              </button>
               {% endfor %}
             </div>
           </div>

@@ -291,9 +291,9 @@ details[open] .ai-helper-arrow { transform: rotate(180deg); }
 
 .theme-option:hover { border-color: var(--site-primary); }
 
-.theme-radio { position: absolute; opacity: 0; width: 0; height: 0; }
+.theme-option { cursor: pointer; background: transparent; border: 1px solid var(--site-border); }
 
-.theme-option:has(.theme-radio:checked) {
+.theme-option--active {
   border-color: var(--site-primary);
   background: color-mix(in srgb, var(--site-primary) 10%, transparent);
 }

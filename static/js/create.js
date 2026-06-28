@@ -30,8 +30,13 @@ const SUBJECT_THEME = {
 };
 
 function applyTheme(key) {
-  const radio = document.getElementById('themeRadio_' + key);
-  if (radio) radio.checked = true;
+  document.getElementById('selectedTheme').value = key;
+}
+
+function selectCustomTheme(btn) {
+  document.querySelectorAll('#customThemeRow .theme-option').forEach(b => b.classList.remove('theme-option--active'));
+  btn.classList.add('theme-option--active');
+  applyTheme(btn.dataset.theme);
 }
 
 function updateThemeDisplay(subject) {
@@ -166,7 +171,7 @@ document.getElementById('createForm').addEventListener('submit', async e => {
   const title = document.getElementById('quizTitle').value.trim();
   if (!title) { showError(errEl, '퀴즈 제목을 입력하세요'); return; }
 
-  const theme = document.querySelector('input[name="theme"]:checked')?.value || 'science';
+  const theme = document.getElementById('selectedTheme').value || 'science';
 
   const items = document.querySelectorAll('.q-item');
   if (!items.length) { showError(errEl, '문항을 최소 1개 추가하세요'); return; }
