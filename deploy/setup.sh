@@ -16,8 +16,33 @@ source venv/bin/activate
 pip install --upgrade pip --quiet
 pip install -r requirements.txt gunicorn --quiet
 
-echo "=== [3/5] nginx 설정 ==="
-sudo cp deploy/nginx.conf /etc/nginx/sites-available/hafsquiz
+echo "=== [3/5] nginx 설정 (HTTP-only, SSL은 certbot이 추가) ==="
+# SSL 인증서가 아직 없으므로 HTTP-only로 먼저 설정
+# certbot --nginx 실행 시 자동으로 HTTPS 블록이 추가됨
+sudo tee /etc/nginx/sites-available/hafsquiz > /dev/null << 'NGINXEOF'
+server {
+    listen 80;
+    server_name hafsquiz.duckdns.org;
+
+    client_max_body_size 10M;
+
+    location /static/ {
+        alias /home/ubuntu/HAFSQuiz/static/;
+        expires 7d;
+        add_header Cache-Control "public, immutable";
+    }
+
+    location / {
+        proxy_pass http://127.0.0.1:5001;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+NGINXEOF
+# static 경로를 실제 홈으로 치환
+sudo sed -i "s|/home/ubuntu/HAFSQuiz|$REPO_DIR|g" /etc/nginx/sites-available/hafsquiz
 sudo ln -sf /etc/nginx/sites-available/hafsquiz /etc/nginx/sites-enabled/hafsquiz
 sudo rm -f /etc/nginx/sites-enabled/default
 sudo nginx -t && sudo systemctl reload nginx
