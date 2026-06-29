@@ -894,7 +894,13 @@ def get_quiz_list():
         else:
             info['theme'] = 'unofficial'
         quizzes.append(info)
-    quizzes.sort(key=lambda q: (1 if q['theme'] == 'unofficial' else 0, q['name']))
+    def _sort_key(q):
+        if q['theme'] == 'unofficial':
+            return (2, q['name'])
+        if q['theme'] == 'other':
+            return (1, q['name'])
+        return (0, q['name'])
+    quizzes.sort(key=_sort_key)
     return quizzes
 
 
