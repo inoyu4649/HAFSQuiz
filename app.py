@@ -882,8 +882,12 @@ def get_quiz_list():
             try:
                 with open(json_file, encoding='utf-8') as f:
                     data = json.load(f)
-                info['title'] = data.get('meta', {}).get('title', name)
-                info['count'] = len(data.get('questions', []))
+                if 'meta' in data and 'questions' in data:
+                    info['title'] = data.get('meta', {}).get('title', name)
+                    info['count'] = len(data.get('questions', []))
+                elif 'events' in data:
+                    info['title'] = data.get('title', name)
+                    info['count'] = len(data.get('events', []))
             except Exception:
                 pass
             for prefix in ('history', 'social', 'science', 'math', 'english', 'korean',
@@ -1040,10 +1044,14 @@ def api_upload():
             json_data = json.loads(json_file_obj.read().decode('utf-8'))
         except Exception:
             return jsonify({'error': 'JSON 파일을 읽을 수 없습니다'}), 400
-        if 'meta' not in json_data or 'questions' not in json_data:
-            return jsonify({'error': 'JSON에 meta와 questions 필드가 필요합니다'}), 400
-        if not isinstance(json_data['questions'], list) or len(json_data['questions']) == 0:
+        is_quiz = 'meta' in json_data and 'questions' in json_data
+        is_timeline = 'title' in json_data and 'events' in json_data
+        if not is_quiz and not is_timeline:
+            return jsonify({'error': 'JSON에 (meta+questions) 또는 (title+events) 필드가 필요합니다'}), 400
+        if is_quiz and (not isinstance(json_data['questions'], list) or len(json_data['questions']) == 0):
             return jsonify({'error': '문항이 최소 1개 필요합니다'}), 400
+        if is_timeline and (not isinstance(json_data['events'], list) or len(json_data['events']) == 0):
+            return jsonify({'error': '연표 사건이 최소 1개 필요합니다'}), 400
 
     html_file.seek(0)
     html_path.write_bytes(html_file.read())
