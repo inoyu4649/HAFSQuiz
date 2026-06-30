@@ -877,7 +877,7 @@ def get_quiz_list():
     for html_file in sorted(QUIZ_DIR.glob('*.html')):
         name = html_file.stem
         json_file = QUIZ_DIR / (name + '.json')
-        info = {'name': name, 'title': name, 'count': 0, 'theme': 'other'}
+        info = {'name': name, 'title': name, 'count': 0, 'theme': 'other', 'quiz_type': 'quiz'}
         if json_file.exists():
             try:
                 with open(json_file, encoding='utf-8') as f:
@@ -888,6 +888,7 @@ def get_quiz_list():
                 elif 'events' in data:
                     info['title'] = data.get('title', name)
                     info['count'] = len(data.get('events', []))
+                    info['quiz_type'] = 'timeline'
             except Exception:
                 pass
             for prefix in ('history', 'social', 'science', 'math', 'english', 'korean',

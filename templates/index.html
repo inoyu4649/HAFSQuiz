@@ -33,6 +33,7 @@
         <span class="quiz-card-count">{% if quiz.theme != 'unofficial' %}{{ quiz.count }}문항{% endif %}</span>
         <span class="quiz-card-badge quiz-card-badge--{{ quiz.theme }}">
           {% if quiz.theme == 'unofficial' %}비공식
+          {% elif quiz.quiz_type == 'timeline' %}연표
           {% else %}{{ themes[quiz.theme].label.split(' ')[0] if quiz.theme in themes else '기타' }}
           {% endif %}
         </span>
